@@ -11,5 +11,10 @@
 
     <artifactId>lab1-entropy</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>one.util</groupId>
+            <artifactId>streamex</artifactId>
+        </dependency>
+    </dependencies>
 </project>
