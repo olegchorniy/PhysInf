@@ -50,12 +50,12 @@ class Lorenz(object):
         return dx_dt, dy_dt, dz_dt
 
 
-def modelling(r, modelling_time=DEFAULT_TIME):
+def modelling(r, modelling_time=DEFAULT_TIME, initial_point=INITIAL):
     lorenz = Lorenz(S, B, r)
     num_points = int(modelling_time / STEP)
 
     trace = np.empty([num_points, 3])
-    trace[0] = INITIAL
+    trace[0] = initial_point
 
     for i in xrange(1, num_points):
         trace[i] = trace[i - 1] + STEP * lorenz.derivative(trace[i - 1])
@@ -139,6 +139,29 @@ def plot_volumes(r, time=DEFAULT_TIME):
     axes.plot(time_points, real_phase_volume)
 
 
+def different_initials(r, time=DEFAULT_TIME):
+    initials = [
+        [10, 10, 10],
+        [10, -10, 4],
+        [7, 4, 15],
+        [-10, -5, 10]
+    ]
+
+    fig = plt.figure("R = {}, T = {}".format(r, time))
+
+    for i, initial_point in enumerate(initials):
+        x, y, z = modelling(r, time, np.array(initial_point))
+
+        ax = fig.add_subplot(220 + i + 1, projection='3d')
+        title = ", ".join(map(str, initial_point))
+
+        three_dim_plot(
+            ax, title,
+            {'x': x, 'y': y, 'z': z},
+            {'x': "X", 'y': "Y", 'z': "Z"}
+        )
+
+
 if __name__ == '__main__':
     r = R_CRITICAL + 2
     time = DEFAULT_TIME
@@ -146,5 +169,6 @@ if __name__ == '__main__':
     attractor_for_various_r(time)
     plot_attractor_with_projections(r, time)
     plot_volumes(r, time)
+    different_initials(r, time)
 
     plt.show()
