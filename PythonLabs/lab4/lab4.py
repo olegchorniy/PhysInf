@@ -1,6 +1,7 @@
-# noinspection PyUnresolvedReferences
 import matplotlib.pyplot as plt
 import numpy as np
+# noinspection PyUnresolvedReferences
+from mpl_toolkits.mplot3d import Axes3D  # let Axes3D to register itself
 
 S = 10
 B = 8.0 / 3.0
