@@ -1,4 +1,4 @@
-.idea/
+JavaLabs/*/target
+*/.idea/
 out/
 *.iml
-*/target
