@@ -10,6 +10,10 @@ rcParams['lines.linewidth'] = 1.0
 DEFAULT_MU = 3.7
 DEFAULT_N = 1000
 
+# Experimentally determined values
+EPS_SYNC = 0.17
+LIM_VALUES = -37.0
+
 
 # ------------------- Logistic related functions --------------
 
@@ -176,13 +180,18 @@ def plot_synchronized_values():
     n = DEFAULT_N
     n_values = range(1, n + 1)
 
-    xy_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='X, Y values')[1].flatten()
-    uv_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='U, V values')[1].flatten()
-    log_v_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='log |v(n)| values')[1].flatten()
+    rows, cols = 5, 2
 
+    xy_ax = plt.subplots(rows, cols, sharex='col', sharey='row', num='X, Y values')[1].flatten()
+    uv_ax = plt.subplots(rows, cols, sharex='col', sharey='row', num='U, V values')[1].flatten()
+    log_v_ax = plt.subplots(rows, cols, sharex='col', sharey='row', num='log |v(n)| values')[1].flatten()
+    lim_ax = plt.subplots(rows, cols, sharex='col', sharey='row', num='lim log |v(n)| / n')[1].flatten()
+
+    # for i, eps in enumerate([0.16, 0.17, 0.18, 0.19]):
     for i, eps in enumerate(np.linspace(0, 0.5, 11, False)[1:]):
         x, y = synchronized_sequence(x_initial, y_initial, eps, n=n)
         u, v = synchronized_transformed(x, y)
+        log_values = np.log(np.abs(v))
 
         title = 'Eps = %.3f' % eps
 
@@ -193,11 +202,16 @@ def plot_synchronized_values():
         uv_ax[i].scatter(u, v)
 
         log_v_ax[i].set_title(title)
-        log_v_ax[i].plot(n_values, np.log(np.abs(v)))
+        log_v_ax[i].plot(n_values, log_values)
+
+        lim_ax[i].set_title(title)
+        lim_ax[i].plot(n_values, log_values / n_values)
 
 
 if __name__ == '__main__':
-    # plot_next_of_prev()
+    plot_next_of_prev()
+    plot_sequences()
     plot_synchronized_values()
-    # plt.legend(loc=3)
+
+    plt.legend(loc=3)
     plt.show()
