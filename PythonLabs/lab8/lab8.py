@@ -1,8 +1,11 @@
-# noinspection PyUnresolvedReferences
 from functools import partial
 
 import numpy as np
 from matplotlib import pyplot as plt
+from pylab import rcParams
+
+rcParams['lines.markersize'] = 3.0
+rcParams['lines.linewidth'] = 1.0
 
 DEFAULT_MU = 3.7
 DEFAULT_N = 1000
@@ -168,25 +171,33 @@ def plot_next_of_prev():
 
 
 def plot_synchronized_values():
-    x_initial = 0.1
-    y_initial = 0.3
+    x_initial = 0.05
+    y_initial = 0.4
+    n = DEFAULT_N
+    n_values = range(1, n + 1)
 
-    xy_fig = plt.figure('X, Y values')
-    uv_fig = plt.figure('U, V values')
+    xy_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='X, Y values')[1].flatten()
+    uv_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='U, V values')[1].flatten()
+    log_v_ax = plt.subplots(5, 2, sharex='col', sharey='row', num='log |v(n)| values')[1].flatten()
 
     for i, eps in enumerate(np.linspace(0, 0.5, 11, False)[1:]):
-        x, y = synchronized_sequence(x_initial, y_initial, eps)
+        x, y = synchronized_sequence(x_initial, y_initial, eps, n=n)
         u, v = synchronized_transformed(x, y)
 
-        xy_ax = xy_fig.add_subplot(5, 2, i + 1)
-        uv_ax = uv_fig.add_subplot(5, 2, i + 1)
-
         title = 'Eps = %.3f' % eps
-        scatter(xy_ax, title, 'x', 'y', x, y)
-        scatter(uv_ax, title, 'u', 'v', u, v)
+
+        xy_ax[i].set_title(title)
+        xy_ax[i].scatter(x, y)
+
+        uv_ax[i].set_title(title)
+        uv_ax[i].scatter(u, v)
+
+        log_v_ax[i].set_title(title)
+        log_v_ax[i].plot(n_values, np.log(np.abs(v)))
 
 
 if __name__ == '__main__':
-    # plt.legend(loc=3)
+    # plot_next_of_prev()
     plot_synchronized_values()
+    # plt.legend(loc=3)
     plt.show()
