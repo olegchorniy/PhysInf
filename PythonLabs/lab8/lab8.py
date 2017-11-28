@@ -18,7 +18,7 @@ LIM_VALUES = -37.0
 # ------------------- Logistic related functions --------------
 
 def logistic_mapping(x, mu):
-    return mu * x * (1 - x)
+    return mu * x * (1.0 - x)
 
 
 def logistic_generator(x_initial, mu, n):
@@ -73,24 +73,20 @@ def second_order_cycle_curve(x, mu=DEFAULT_MU):
     mu_2 = mu ** 2
     mu_3 = mu ** 3
 
-    return mu_3 * (x ** 3) - (mu_3 + mu_2) * (x ** 2) + mu_2 * x
+    return mu_3 * (x ** 3) - 2 * mu_3 * (x ** 2) + (mu_2 + mu_3) * x - mu_2 + 1
 
 
 def sec_order_discriminant(mu):
-    mu_2 = mu ** 2
-    mu_3 = mu ** 3
-    return (mu_2 + mu_3) ** 2 - 4 * mu_3 * (mu_2 - 1)
+    return (mu ** 2) - 2 * mu - 3
 
 
 def sec_order_roots(mu):
     D = sec_order_discriminant(mu)
     D_root = D ** 0.5
-    mu_3 = mu ** 3
-    mu_2 = mu ** 2
-    t = mu_3 + mu_2
-    t2 = 2 * mu_3
+    t1 = mu + 1
+    t2 = 2 * mu
 
-    return [(t + D_root) / t2, (t - D_root) / t2]
+    return [(t1 + D_root) / t2, (t1 - D_root) / t2]
 
 
 # ------------------ Plotting helpers ---------------------
@@ -208,10 +204,27 @@ def plot_synchronized_values():
         lim_ax[i].plot(n_values, log_values / n_values)
 
 
-if __name__ == '__main__':
-    plot_next_of_prev()
-    plot_sequences()
-    plot_synchronized_values()
+# ------------------ Stability ---------------------------
 
-    plt.legend(loc=3)
+def stability_graph(point, mu=DEFAULT_MU, iterations=100):
+    points = np.empty(iterations)
+
+    for i in xrange(iterations):
+        prev_point = points[i - 1] if i > 0 else point
+        points[i] = logistic_mapping(prev_point, mu)
+
+    axes = plt.figure('Stability').gca()
+
+    axes.scatter([point], [0], marker='o', c='red')
+    axes.scatter(points, np.full(iterations, 0.0), marker='|', c='green')
+
+
+if __name__ == '__main__':
+    # plot_next_of_prev()
+    # plot_sequences()
+    # plot_synchronized_values()
+
+    stability_graph(0.390022200713282)
+
+    # plt.legend(loc=3)
     plt.show()

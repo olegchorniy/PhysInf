@@ -13,7 +13,7 @@ R_CRITICAL = S * (S + B + 3.0) / (S - B - 1)
 # modelling related constants
 DEFAULT_TIME = 50
 STEP = 1e-2
-INITIAL = np.array([2, -1, 0])
+INITIAL = np.array([2, -1, 2])
 
 
 # Plotting helpers
@@ -166,9 +166,9 @@ if __name__ == '__main__':
     r = R_CRITICAL + 2
     time = DEFAULT_TIME
 
-    attractor_for_various_r(time)
-    plot_attractor_with_projections(r, time)
+    # attractor_for_various_r(time)
+    # plot_attractor_with_projections(r, time)
     plot_volumes(r, time)
-    different_initials(r, time)
+    # different_initials(r, time)
 
     plt.show()
