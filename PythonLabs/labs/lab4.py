@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+
+import lorenz
 # noinspection PyUnresolvedReferences
 from mpl_toolkits.mplot3d import Axes3D  # let Axes3D to register itself
 
@@ -33,36 +35,6 @@ def two_dim_plot(axes, title, points, labels):
     axes.set_title(title)
 
 
-class Lorenz(object):
-    def __init__(self, sigma, b, r):
-        self._s = sigma
-        self._b = b
-        self._r = r
-
-    def derivative(self, state):
-        return np.array(self.derivative_core(*state))
-
-    def derivative_core(self, x, y, z):
-        dx_dt = self._s * (y - x)
-        dy_dt = x * (self._r - z) - y
-        dz_dt = x * y - self._b * z
-
-        return dx_dt, dy_dt, dz_dt
-
-
-def modelling(r, modelling_time=DEFAULT_TIME, initial_point=INITIAL):
-    lorenz = Lorenz(S, B, r)
-    num_points = int(modelling_time / STEP)
-
-    trace = np.empty([num_points, 3])
-    trace[0] = initial_point
-
-    for i in xrange(1, num_points):
-        trace[i] = trace[i - 1] + STEP * lorenz.derivative(trace[i - 1])
-
-    return trace[:, 0], trace[:, 1], trace[:, 2]
-
-
 def time_values(modelling_time=DEFAULT_TIME):
     num_points = int(modelling_time / STEP)
     return np.linspace(0, modelling_time, num_points, True)
@@ -74,7 +46,7 @@ def attractor_for_various_r(time=DEFAULT_TIME):
     r_midpoint = 1 + (R_CRITICAL - 1) / 2.0
 
     for i, r in enumerate([0.5, r_midpoint, R_CRITICAL + 1]):
-        x, y, z = modelling(r, time)
+        x, y, z = lorenz.modelling(S, B, r, INITIAL, time)
 
         axes = fig.add_subplot(220 + i + 1, projection='3d')
         title = "R = {}".format(r)
@@ -87,7 +59,7 @@ def attractor_for_various_r(time=DEFAULT_TIME):
 
 
 def plot_attractor_with_projections(r, time=DEFAULT_TIME):
-    x, y, z = modelling(r, time)
+    x, y, z = lorenz.modelling(S, B, r, INITIAL, time)
 
     fig = plt.figure("Attractor, R = {}, T = {}".format(r, time))
 
@@ -124,7 +96,7 @@ def plot_volumes(r, time=DEFAULT_TIME):
     real_phase_volume = v_initial * np.exp(-(S + 1 + B) * time_points)
 
     # Modelled volume values
-    x, y, z = modelling(r, time)
+    x, y, z = lorenz.modelling(S, B, r, INITIAL, time)
     calculated_phase_volume = x * y * z
 
     # Plot on a separate plane
@@ -150,7 +122,7 @@ def different_initials(r, time=DEFAULT_TIME):
     fig = plt.figure("R = {}, T = {}".format(r, time))
 
     for i, initial_point in enumerate(initials):
-        x, y, z = modelling(r, time, np.array(initial_point))
+        x, y, z = lorenz.modelling(S, B, r, np.array(initial_point), time)
 
         ax = fig.add_subplot(220 + i + 1, projection='3d')
         title = ", ".join(map(str, initial_point))
@@ -166,9 +138,9 @@ if __name__ == '__main__':
     r = R_CRITICAL + 2
     time = DEFAULT_TIME
 
-    # attractor_for_various_r(time)
-    # plot_attractor_with_projections(r, time)
+    attractor_for_various_r(time)
+    plot_attractor_with_projections(r, time)
     plot_volumes(r, time)
-    # different_initials(r, time)
+    different_initials(r, time)
 
     plt.show()
