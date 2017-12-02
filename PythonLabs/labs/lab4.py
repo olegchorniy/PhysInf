@@ -35,8 +35,8 @@ def two_dim_plot(axes, title, points, labels):
     axes.set_title(title)
 
 
-def time_values(modelling_time=DEFAULT_TIME):
-    num_points = int(modelling_time / STEP)
+def time_values(modelling_time=DEFAULT_TIME, step=STEP):
+    num_points = int(modelling_time / step)
     return np.linspace(0, modelling_time, num_points, True)
 
 
