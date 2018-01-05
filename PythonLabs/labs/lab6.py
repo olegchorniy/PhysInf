@@ -80,9 +80,10 @@ def neuron_plot(I, init, plot_uv=False):
 
 
 def task_0_print_values():
-    print 'I_cr = %.4f, (V_cr, U_cr) = (%.4f, %.4f)' % (I_critical, U_critical, V_critical)
+    print 'I_cr = %.4f, (V_2, U_2) = (%.4f, %.4f)' % (I_critical, U_critical, V_critical)
     print 'Lambda values: %s' % lambdas
-    print 'e = %s, p = %s' % (e, p)
+    print '(V_, U_) = %s, p = %s' % (e, p)
+    print '(V2, U2) +- 2 (V_, U_) = %s, %s' % (p1, p2)
 
 
 def task_2_u_v_plots():
@@ -104,7 +105,7 @@ def task_5_peak_freqs():
     I_values = [I_critical * n for n in range(1, 11)]
     count_values = [get_curve(I, init)[2] for I in I_values]
 
-    fig = plt.figure('Peaks frequency, time = {}'.format(TIME))
+    fig = plt.figure('Peaks frequency, time = {}'.format(T))
     plot_on(fig.gca(), I_values, count_values, 'N(I)', 'I', 'N')
 
 

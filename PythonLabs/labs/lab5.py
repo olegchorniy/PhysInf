@@ -1,6 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from pylab import rcParams, datetime
+
+from lab4 import time_values
 # noinspection PyUnresolvedReferences
 from mpl_toolkits.mplot3d import Axes3D  # let Axes3D to register itself
 
@@ -153,12 +155,14 @@ def select_tau(values):
     # Reconstruction in the most likely region
     fig = plt.figure('Reconstructions')
 
-    shifts = np.arange(7, 11, 1)
-    for i, shift in enumerate(shifts):
-        x_val = values[:-shift]
-        y_val = values[shift:]
+    fig.gca().plot(values[:-local_min], values[local_min:])
 
-        fig.add_subplot(2, 2, i + 1).plot(x_val, y_val)
+    # shifts = np.arange(7, 11, 1)
+    # for i, shift in enumerate(shifts):
+    #     x_val = values[:-shift]
+    #     y_val = values[shift:]
+    #
+    #     fig.add_subplot(2, 2, i + 1).plot(x_val, y_val)
 
 
 def angle(x, y):
@@ -205,11 +209,16 @@ def C_plot(x, y, z, x_, y_, z_):
     axes.plot(r_logs, c_logs, label='Real 3D values, angle = %.3f' % ang)
 
 
-def lab_task():
+def attractor_beginning():
     # Looking for the beginning of the attractor
-    # time = TIME
-    # initial = INITIAL
-    # plot(time_values(time, DT), x, 'X(T)', 'T', 'X')
+    initial = INITIAL
+    time = TIME
+    x, y, z = modelling(S, b, r, initial, time, DT)
+    plot(time_values(time, DT), x, 'X(T)', 'T', 'X')
+
+
+def lab_task():
+    attractor_beginning()
 
     time = 250 - T_INIT
     initial = P_INIT
@@ -217,11 +226,13 @@ def lab_task():
     x, y, z = modelling(S, b, r, initial, time, DT)
     plot_3d(x, y, z, 'Real attractor', 'X', 'Y', 'Z')
 
-    # select_tau(x)
+    select_tau(x)
 
     tau = TAU_IDX * DT
     n_max = len(x)
     n = min(10000, n_max - 2 * TAU_IDX)
+
+    print 'N_max = {}, tau = {}, N = {}'.format(n_max, tau, n)
 
     x_ = x[:n]
     y_ = x[TAU_IDX:n + TAU_IDX]
